@@ -1,0 +1,23 @@
+FROM mysql:5.7
+LABEL MAINTAINER="Thomas Laurenson <thomas@thomaslaurenson.com>"
+
+# Update system, and install git
+RUN apt-get update
+RUN apt-get install -y git
+
+# Clone project repo
+WORKDIR /opt
+RUN git clone --depth=1 https://github.com/cmangos/classic-db.git; exit 0
+
+# Enter repo directory, copy over the database config file
+WORKDIR /opt/classic-db
+COPY ./InstallFullDB.config .
+RUN chmod u+x InstallFullDB.sh
+
+# Set mysql permissions on classic-db
+# This is needed, as entrypoint script uses mysql user
+RUN chown -R mysql:mysql /opt/classic-db/
+
+# Copy autopopulate script to docker entrypoint to auto insert data
+# Comment out if you don't want to auto populate
+COPY ./init.sh /docker-entrypoint-initdb.d/init.sh

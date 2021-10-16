@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: wow-classic-db
+    build:
+      context: mysql
+      dockerfile: Dockerfile-cmangos
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"

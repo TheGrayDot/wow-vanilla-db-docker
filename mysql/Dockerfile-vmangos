@@ -1,0 +1,15 @@
+FROM mysql:5.7
+LABEL MAINTAINER="Thomas Laurenson <thomas@thomaslaurenson.com>"
+
+# Update system, and install 7z + wget
+RUN apt-get update
+RUN apt-get install -y p7zip-full wget
+
+# Download and extract vmangos SQL database dump
+WORKDIR /opt
+RUN wget https://github.com/brotalnia/database/raw/master/world_full_14_june_2021.7z
+RUN 7z e world_full_14_june_2021.7z -aoa
+
+# Copy SQL dump to docker entrypoint to auto insert data
+# Comment out if you don't want to auto populate
+# RUN cp world_full_14_june_2021.sql /docker-entrypoint-initdb.d/world_full_14_june_2021.sql
