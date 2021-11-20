@@ -9,62 +9,39 @@ A simple Docker Compose environment for spinning up a WoW Classic (Vanilla) MySQ
 
 ## Why Use This Project?
 
-I mainly developed this project as I like to mess with the WoW Classic database - extracting information about items and learning about the inner workings. It is not really suitable for a production server build, but some tweaks could be made to improve performance and make data persistent using volumes.
+I mainly developed this project as I like to mess with the data WoW Classic databases - extracting information about items and NPCs and learning about the inner workings. It is not really suitable for a production server build, but some tweaks could be made to improve performance and make data persistent using volumes. Please note that this build only includes the "world" database, and the usual "realm", "characters" and "logs" databases are not included. Basically, this is just the data that contains in-game information, and not the database configuration required for hosting a full MaNGOS-style server.
 
 ## Quickstart
 
-- Change credentials in the `.env` file is desired
+- Change credentials in the `.env` file if you want
 - Change `Dockerfile` option in `docker-compose.yml` to `Dockerfile-cmangos` or `Dockerfile-vmangos`
 - Start containers using `docker-compose up --build`
 
-## Database Sources
+## Selecting the Database Source
 
 There are a bunch of WoW Classic database options available. This projects supports [Continued MaNGOS](https://github.com/cmangos) as it is reliable and robust, and [Vanilla MaNGOS](https://github.com/vmangos) as it has built in support for Vannila patch progression.
 
-## VMaNGOS
+In the `docker-compose.yml` file, set the `Dockerfile` to property to the desired source. The options are:
 
-The VMaNGOS configuration is simple, as it is comprised of a simple database dump in an `.sql` file. The database code is available [on brotalnia's `database` GitHub repository](https://github.com/brotalnia/database). There are a bunch of dated `.sql` files, which are based on the databases from the Lights Hope server project.
+- CMaNGOS version uses `Dockerfile-cmangos`
+- VMaNGOS version uses `Dockerfile-vmangos`
 
-### Set Correct Dockerfile
-
-In the `docker-compose.yml` file, set the `Dockerfile` to the VMaNGOS version, named `Dockerfile-vmangos`.
+Simply change line 9 of the `docker-compose.yml` file to either Dockerfile. For example:
 
 ```none
 dockerfile: Dockerfile-vmangos
 ```
 
-### Automatically Insert Database Contents
+## Insert the Database Contents
 
-If you want the container to automatically insert the database when started, uncommnet out the following line in the `Dockerfile-vmangos` file.
-
-```none
-# Copy SQL dump to docker entrypoint to auto insert data
-# Comment out if you don't want to auto populate
-RUN cp world_full_14_june_2021.sql /docker-entrypoint-initdb.d/world_full_14_june_2021.sql
-```
-
-### Manually Insert Database Contents
-
-If you want to manually insert the data, just enter the Docker container and run a specific `mysql` command.
+This process can be either manual or automated. By default, it is set to manual - mainly so the container can be restarted without performing too much repitition of tasks. To manually insert the data, just enter the Docker container and run the initialization script.
 
 ```none
 docker exec -it wow-classic-db /bin/bash
-mysql -umangos -pmangos -D classicmangos < world_full_14_june_2021.sql
+./init_cmangos.sh
+OR
+./init_vmangos.sh
 ```
-
-## CMaNGOS
-
-The CMaNGOS configuration is a little more complex, as it uses a custom script to insert data from a selection of `.sql` files. The database code is available [on cmangos's ` classic-db` GitHub repository](https://github.com/cmangos/classic-db).
-
-### Set Correct Dockerfile
-
-In the `docker-compose.yml` file, set the `Dockerfile` to the VMaNGOS version, named `Dockerfile-cmangos`.
-
-```none
-dockerfile: Dockerfile-cmangos
-```
-
-### Automatically Insert Database Contents
 
 If you want the container to automatically insert the database when started, uncommnet out the following line in the `Dockerfile-cmangos` file.
 
@@ -72,13 +49,4 @@ If you want the container to automatically insert the database when started, unc
 # Copy autopopulate script to docker entrypoint to auto insert data
 # Comment out if you don't want to auto populate
 COPY ./init.sh /docker-entrypoint-initdb.d/init.sh
-```
-
-### Manually Insert Database Contents
-
-If you want to manually insert the data, just enter the Docker container and run a specific `mysql` command.
-
-```none
-docker exec -it wow-classic-db /bin/bash
-./InsertFullDB.sh
 ```
