@@ -15,7 +15,7 @@ I mainly developed this project as I like to mess with the data WoW Classic data
 
 - Change credentials in the `.env` file if you want
 - Change `Dockerfile` option in `docker-compose.yml` to `Dockerfile-cmangos` or `Dockerfile-vmangos`
-- Start containers using `docker-compose up --build`
+- Start containers using `docker compose up --build`
 
 ## Selecting Database Source
 
@@ -42,7 +42,7 @@ docker compose up --build
 
 ## Insert Database Contents
 
-This process can be either manual or automated. By default, it is set to manual - mainly so the container can be restarted without performing too much repitition of tasks. To manually insert the data, just enter the Docker container and run the initialization script.
+This process can be either manual or automated. By default, it is set to manual - mainly so the container can be restarted without performing too much repitition of tasks. To manually insert the data, just enter the Docker container and run the initialization script for the specific MaNGOS version being used.
 
 ```none
 docker exec -it wow-classic-db bash /opt/init_cmangos.sh
@@ -50,10 +50,13 @@ OR
 docker exec -it wow-classic-db bash /opt/init_vmangos.sh
 ```
 
-If you want the container to automatically insert the database when started, uncommnet out the following line in the `Dockerfile-cmangos` file.
+If you want the container to automatically insert the database when started, uncommnet out the following line in the `Dockerfile-cmangos` file. Do the same thing for the `Dockerfile-vmangos` file.
 
 ```none
-# Copy autopopulate script to docker entrypoint to auto insert data
-# Comment out if you don't want to auto populate
-COPY ./init.sh /docker-entrypoint-initdb.d/init.sh
+# Copy auto populate script to either:
+# 1) /opt - then run it manually
+# 2) docker entrypoint - which will auto run on container start
+# Comment out one which one you don't want to use...
+COPY ./init_cmangos.sh /opt/init_cmangos.sh
+# COPY ./init_cmangos.sh /docker-entrypoint-initdb.d/init_cmangos.sh
 ```
