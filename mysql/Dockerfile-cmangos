@@ -1,5 +1,4 @@
-FROM mysql:5.7
-LABEL MAINTAINER="Thomas Laurenson <thomas@thomaslaurenson.com>"
+FROM mysql:5.7-debian
 
 # Update system, and install git
 RUN apt-get update
@@ -12,7 +11,7 @@ RUN git clone --depth=1 https://github.com/cmangos/mangos-classic.git; exit 0
 
 # Extract database
 WORKDIR /opt/classic-db/Full_DB
-RUN gunzip ClassicDB_1_11_z2757.sql.gz; exit 0
+RUN gunzip ClassicDB_1_12_z2793.sql.gz; exit 0
 
 # Copy auto populate script to either:
 # 1) /opt - then run it manually

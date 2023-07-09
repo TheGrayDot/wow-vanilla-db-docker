@@ -5,7 +5,7 @@ A simple Docker Compose environment for spinning up a WoW Classic (Vanilla) MySQ
 ## Requirements
 
 - Docker
-- Docker Compose
+- Docker Compose plugin
 
 ## Why Use This Project?
 
@@ -17,7 +17,7 @@ I mainly developed this project as I like to mess with the data WoW Classic data
 - Change `Dockerfile` option in `docker-compose.yml` to `Dockerfile-cmangos` or `Dockerfile-vmangos`
 - Start containers using `docker-compose up --build`
 
-## Selecting the Database Source
+## Selecting Database Source
 
 There are a bunch of WoW Classic database options available. This projects supports [Continued MaNGOS](https://github.com/cmangos) as it is reliable and robust, and [Vanilla MaNGOS](https://github.com/vmangos) as it has built in support for Vannila patch progression.
 
@@ -26,21 +26,28 @@ In the `docker-compose.yml` file, set the `Dockerfile` to property to the desire
 - CMaNGOS version uses `Dockerfile-cmangos`
 - VMaNGOS version uses `Dockerfile-vmangos`
 
-Simply change line 9 of the `docker-compose.yml` file to either Dockerfile. For example:
+Simply comment out line 10 or 11 of the `docker-compose.yml` file to either Dockerfile. For example:
 
 ```none
 dockerfile: Dockerfile-vmangos
 ```
 
-## Insert the Database Contents
+## Start Containers
+
+Use Docker Compose plugin to start the MySQL and Python containers:
+
+```none
+docker compose up --build
+```
+
+## Insert Database Contents
 
 This process can be either manual or automated. By default, it is set to manual - mainly so the container can be restarted without performing too much repitition of tasks. To manually insert the data, just enter the Docker container and run the initialization script.
 
 ```none
-docker exec -it wow-classic-db /bin/bash
-./init_cmangos.sh
+docker exec -it wow-classic-db bash /opt/init_cmangos.sh
 OR
-./init_vmangos.sh
+docker exec -it wow-classic-db bash /opt/init_vmangos.sh
 ```
 
 If you want the container to automatically insert the database when started, uncommnet out the following line in the `Dockerfile-cmangos` file.

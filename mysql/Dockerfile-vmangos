@@ -1,5 +1,4 @@
-FROM mysql:5.7
-LABEL MAINTAINER="Thomas Laurenson <thomas@thomaslaurenson.com>"
+FROM mysql:5.7-debian
 
 # Update system, and install 7z + wget
 RUN apt-get update
@@ -14,6 +13,9 @@ WORKDIR /opt
 RUN wget https://github.com/brotalnia/database/raw/master/world_full_14_june_2021.7z -O world_full_14_june_2021.7z
 RUN 7z e world_full_14_june_2021.7z -aoa
 
-# Copy autopopulate script to docker entrypoint to auto insert data
-# Comment out if you don't want to auto populate
+# Copy auto populate script to either:
+# 1) /opt - then run it manually
+# 2) docker entrypoint - which will auto run on container start
+# Comment out one which one you don't want to use...
+COPY ./init_vmangos.sh /opt/init_vmangos.sh
 # COPY ./init_vmangos.sh /docker-entrypoint-initdb.d/init_vmangos.sh
