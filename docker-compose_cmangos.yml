@@ -3,26 +3,26 @@ version: '3.1'
 services:
 
   mysql:
-    image: mysql:5.7-debian
-    container_name: wow-classic-db
+    image: wow-classic-db-cmangos
+    container_name: wow-classic-db-cmangos
     build:
       context: mysql
-      # dockerfile: Dockerfile-cmangos
-      dockerfile: Dockerfile-vmangos
+      dockerfile: Dockerfile-cmangos
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_PWD: ${MYSQL_PASSWORD}
       MYSQL_PORT: ${MYSQL_PORT}
-    networks:
-      - backend
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
 
   python:
-    image: python:3.9-slim-bullseye
-    container_name: wow-classic-python
+    image: wow-classic-python-cmangos
+    container_name: wow-classic-python-cmangos
     build:
       context: python
       dockerfile: Dockerfile
@@ -37,10 +37,3 @@ services:
       - MYSQL_PORT=${MYSQL_PORT}
     volumes:
       - ./python:/python
-    networks:
-      - frontend
-      - backend
-
-networks:
-  frontend:
-  backend:

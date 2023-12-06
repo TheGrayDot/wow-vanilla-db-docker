@@ -14,5 +14,6 @@ $MYSQL_CMD < world_full_14_june_2021.sql
 echo "[+] Inserting latest DB migrations..."
 cd /opt/core/sql/migrations
 for sql_file in *world.sql; do
+    echo "[+] Inserting: $sql_file"
     $MYSQL_CMD < $sql_file
 done

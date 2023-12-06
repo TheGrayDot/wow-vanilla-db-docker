@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+
+  mysql:
+    image: wow-classic-db-vmangos
+    container_name: wow-classic-db-vmangos
+    build:
+      context: mysql
+      dockerfile: Dockerfile-vmangos
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    command: --max_allowed_packet=128M
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
+
+  python:
+    image: wow-classic-python-vmangos
+    container_name: wow-classic-python-vmangos
+    build:
+      context: python
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on: 
+      mysql:
+        condition: service_started
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_PORT=${MYSQL_PORT}
+    volumes:
+      - ./python:/python

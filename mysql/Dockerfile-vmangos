@@ -17,5 +17,5 @@ RUN 7z e world_full_14_june_2021.7z -aoa
 # 1) /opt - then run it manually
 # 2) docker entrypoint - which will auto run on container start
 # Comment out one which one you don't want to use...
-COPY ./init_vmangos.sh /opt/init_vmangos.sh
-# COPY ./init_vmangos.sh /docker-entrypoint-initdb.d/init_vmangos.sh
+# COPY ./init_vmangos.sh /opt/init_vmangos.sh
+COPY ./init_vmangos.sh /docker-entrypoint-initdb.d/init_vmangos.sh

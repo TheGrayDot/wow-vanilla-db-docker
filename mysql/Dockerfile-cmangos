@@ -11,11 +11,11 @@ RUN git clone --depth=1 https://github.com/cmangos/mangos-classic.git; exit 0
 
 # Extract database
 WORKDIR /opt/classic-db/Full_DB
-RUN gunzip ClassicDB_1_12_z2793.sql.gz; exit 0
+RUN gunzip ClassicDB_1_12_1_z2815.sql.gz; exit 0
 
 # Copy auto populate script to either:
 # 1) /opt - then run it manually
 # 2) docker entrypoint - which will auto run on container start
 # Comment out one which one you don't want to use...
-COPY ./init_cmangos.sh /opt/init_cmangos.sh
-# COPY ./init_cmangos.sh /docker-entrypoint-initdb.d/init_cmangos.sh
+# COPY ./init_cmangos.sh /opt/init_cmangos.sh
+COPY ./init_cmangos.sh /docker-entrypoint-initdb.d/init_cmangos.sh
